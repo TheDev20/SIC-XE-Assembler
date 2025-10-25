@@ -1,0 +1,54 @@
+          COPY      START     0                
+0000      FIRST     STL       RETADR           
+0003      CLOOP     JSUB      RDREC            
+0006                LDA       LENGTH           
+0009                COMP      #0               
+000C                JEQ       ENDFIL           
+000F                JSUB      WRREC            
+0012                J         CLOOP            
+                    BASE      LENGTH           
+0015      ENDFIL    LDA       =C'EOF'          
+0018                STA       BUFFER           
+001B                LDA       #3               
+001E                STA       LENGTH           
+0021                JSUB      WRREC            
+0024                J         @RETADR          
+                    USE       CDATA            
+0000      RETADR    RESW      1                
+0003      LENGTH    RESW      1                
+                    USE       CBLKS            
+0000      BUFFER    RESB      4096             
+          BUFFEND   EQU       *                
+          MAXLEN    EQU       BUFFEND-BUFFER   
+                    USE                        
+0027      RDREC     CLEAR     X                
+0029                CLEAR     A                
+002B                CLEAR     S                
+002D                +LDT      #MAXLEN          
+0031      RLOOP     TD        INPUT            
+0034                JEQ       RLOOP            
+0037                RD        INPUT            
+003A                COMPR     A,S              
+003C                JEQ       EXIT             
+003F                STCH      BUFFER,X         
+0042                TIXR      T                
+0044                JLT       RLOOP            
+0047      EXIT      STX       LENGTH           
+004A                RSUB                       
+                    USE       CDATA            
+0006      INPUT     BYTE      X'F1'            
+                    USE                        
+004D      WRREC     CLEAR     X                
+004F                LDT       LENGTH           
+0052      WLOOP     TD        =X'05'           
+0055                JEQ       WLOOP            
+0058                LDCH      BUFFER,X         
+005B                WD        =X'05'           
+005E                TIXR      T                
+0060                JLT       WLOOP            
+0063                RSUB                       
+                    USE       CDATA            
+                    LTORG                      
+0007      *         BYTE      C'EOF'           
+000A      *         BYTE      X'05'            
+                    END       FIRST            

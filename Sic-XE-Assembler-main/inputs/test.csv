@@ -1,0 +1,8 @@
+Location,Name,Instruction,Address/Value,op
+ ,Copy,Start,0, 
+ ,ENDFIL,LDA,=C'EOF', 
+ ,ENDFIL2,LDA,=C'FOF', 
+ , ,LTORG, , 
+ ,ENDFIL,LDA,=C'EOF', 
+ ,ENDFIL2,LDA,=C'FFOF', 
+ , ,END, , 
